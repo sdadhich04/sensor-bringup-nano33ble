@@ -57,3 +57,9 @@ Open either sketch in Arduino IDE, install the libraries above via Library Manag
 ## Authors
 
 Sparsh Dadhich — University of Washington, ECE / Neuroscience
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE). This covers the author's own code, notebooks, and documentation in this repo.
