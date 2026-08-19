@@ -11,7 +11,7 @@ float motionValue = 0.0;
 int proximityValue = 0;
 
 const int SOUND_THR = 50;
-const int DARK_THR = 50;
+const int BRIGHT_THR = 50;
 const float MOTION_THR = 0.12;
 const int PROXIMITY_THR = 200;
 
@@ -81,25 +81,18 @@ void loop() {
 
   // Binary flags
   int sound = (micValue > SOUND_THR) ? 1 : 0;
-  int dark = (lightValue > DARK_THR) ? 1 : 0;
+  int bright = (lightValue > BRIGHT_THR) ? 1 : 0;
   int moving = (motionValue > MOTION_THR) ? 1 : 0;
   int near = (proximityValue > PROXIMITY_THR) ? 1 : 0;
 
-  String label;
-
-  if (sound == 0 && dark == 1 && moving == 0 && near == 1) {
-    label = "QUIET_BRIGHT_STEADY_FAR";
-  }
-  else if (sound == 1 && dark == 1 && moving == 0 && near == 1) {
-    label = "NOISY_BRIGHT_STEADY_FAR";
-  }
-  else if (sound == 0 && dark == 0 && moving == 0 && near == 0) {
-    label = "QUIET_DARK_STEADY_NEAR";
-  } 
-  else if (sound == 1 && dark == 1 && moving == 1 && near == 0) {
-    label = "NOISY_BRIGHT_MOVING_NEAR";
-  }
-
+  // Build the state label from all four flags so every one of the 16
+  // possible combinations produces a readable state instead of leaving
+  // the label blank when it doesn't match one of a few hardcoded cases.
+  String label = "";
+  label += sound ? "NOISY_" : "QUIET_";
+  label += bright ? "BRIGHT_" : "DARK_";
+  label += moving ? "MOVING_" : "STEADY_";
+  label += near ? "NEAR" : "FAR";
 
   Serial.print("raw,mic=");
   Serial.print(micValue);
@@ -112,8 +105,8 @@ void loop() {
 
   Serial.print("flags,sound=");
   Serial.print(sound);
-  Serial.print(",dark=");
-  Serial.print(dark);
+  Serial.print(",bright=");
+  Serial.print(bright);
   Serial.print(",moving=");
   Serial.print(moving);
   Serial.print(",near=");
