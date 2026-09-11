@@ -1,65 +1,36 @@
-# Sensor Bring-Up — Arduino Nano 33 BLE Sense
+# Arduino Nano 33 BLE Sensor Bring-Up
 
-**EE 446: Tiny Machine Learning for Ultra Low-Power Edge Computing | University of Washington, Spring 2026**
-
-Hardware and sensor setup lab for the Arduino Nano 33 BLE Sense — verifying every onboard sensor works and can trigger simple threshold-based events, as a foundation for the TinyML labs that follow.
-
----
+Two Arduino sketches for exercising onboard sensors on an Arduino Nano 33 BLE Sense during an EE 446 lab.
 
 ## What it does
 
-Two sketches exercise the full onboard sensor suite:
+`arduino/Task10_Lab2_EE446.ino` initializes the PDM microphone, BMI270/BMM150 IMU, and APDS9960 sensor. It samples microphone amplitude, accelerometer-derived motion, APDS clear-channel light, and proximity. The sketch prints raw values, four binary threshold flags, and a combined state label to the serial monitor once per second.
 
-**Task 10** — microphone (PDM), IMU (accelerometer/gyroscope/magnetometer), and proximity/gesture/light sensor:
-- PDM microphone sampling with a sound-level threshold ("clap test")
-- Motion detection via accelerometer magnitude threshold
-- Ambient light level via the APDS9960 proximity sensor
-- Proximity threshold trigger
+`arduino/Task11_Lab2_EE446.ino` initializes the HS300x, BMI270/BMM150 IMU, and APDS9960. Its first sensor read becomes a baseline. Later readings are compared with that baseline for humidity, temperature, magnetic-field magnitude, and light/color changes. It prints raw readings, flags, and one event label every 500 ms.
 
-**Task 11** — humidity/temperature, magnetometer, and RGB color sensing:
-- HS300x humidity + temperature sensor, baseline-relative threshold detection
-- Magnetometer field-strength threshold
-- APDS9960 RGB color channel readings against a captured baseline
+The thresholds and event labels are fixed in the sketches; this repository does not include logging, model training, or automated tests.
 
-Both sketches establish a baseline reading, then flag "event detected" when live readings deviate from baseline by more than a fixed threshold — the basic sensor-fusion pattern used throughout the rest of the course.
+## Hardware and tools
 
----
-
-## Repository contents
-
-```
-arduino/
-  Task10_Lab2_EE446.ino    ← Microphone, IMU, proximity/light sensor test
-  Task11_Lab2_EE446.ino    ← Humidity/temperature, magnetometer, RGB color sensor test
-Lab2-Instructions.pdf       ← Lab handout (hardware setup, Arduino IDE setup, Blink example, sensor tests)
-Lab2_EE446.pdf              ← Written report / task writeups
-```
-
----
-
-## Hardware
-
-- **Arduino Nano 33 BLE Sense** (Nordic nRF52840) — onboard PDM microphone, BMI270 + BMM150 IMU, APDS9960 proximity/gesture/color/light sensor, HS300x humidity/temperature sensor
-
-## Arduino libraries required
-
-- `PDM` (bundled with the Nano 33 BLE Sense board package)
+- Arduino Nano 33 BLE Sense
+- Arduino IDE
+- `PDM`
 - `Arduino_BMI270_BMM150`
 - `Arduino_APDS9960`
-- `Arduino_HS300x`
+- `Arduino_HS300x` (Task 11)
 
-## Quick start
+## Run
 
-Open either sketch in Arduino IDE, install the libraries above via Library Manager, select the Nano 33 BLE Sense board, upload, and open Serial Monitor at 115200 baud. Move the board / make noise / cover the light sensor to trigger threshold events.
+1. Install the listed libraries required by the sketch you plan to upload.
+2. Connect the board, select the Arduino Nano 33 BLE Sense board and its port, then open one sketch from `arduino/`.
+3. Upload the sketch and open Serial Monitor at 115200 baud.
 
----
+Each sketch prints an initialization failure and stops if one of its required sensors cannot be started.
 
-## Authors
+## Credits
 
-Sparsh Dadhich — University of Washington, ECE / Neuroscience
-
----
+Sparsh Dadhich. Developed for EE 446: Tiny Machine Learning for Ultra Low-Power Edge Computing at the University of Washington (Spring 2026).
 
 ## License
 
-MIT — see [LICENSE](LICENSE). This covers the author's own code, notebooks, and documentation in this repo.
+[MIT License](LICENSE).
